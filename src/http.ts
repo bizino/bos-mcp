@@ -25,6 +25,7 @@ import {
   promotionTools,
   engagementTools,
 } from './tools/bos';
+import { smartTools } from './tools/smart';
 
 const allTools: McpTool[] = [
   ...healthTools,
@@ -43,6 +44,7 @@ const allTools: McpTool[] = [
   ...checkoutTools,
   ...promotionTools,
   ...engagementTools,
+  ...smartTools,
 ];
 
 const app = express();
