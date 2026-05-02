@@ -1,12 +1,12 @@
-import { BosApiClient } from '../client';
-import { McpTool } from './index';
+import { BosApiClient } from '../client/index.js';
+import { McpTool } from './index.js';
 
 export const moduleTools: McpTool[] = [
   {
     name: 'boscli_module_list',
     description: 'List all BOS modules with their enabled/disabled status',
     schema: {},
-    handler: async (_, client) => client.get('/boscli/modules'),
+    handler: async (_, client) => client.get('/api/boscli/modules'),
   },
   {
     name: 'boscli_module_show',

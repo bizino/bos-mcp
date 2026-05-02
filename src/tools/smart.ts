@@ -1,4 +1,4 @@
-import { McpTool } from './index';
+import { McpTool } from './index.js';
 
 export const smartTools: McpTool[] = [
   {
@@ -9,7 +9,7 @@ export const smartTools: McpTool[] = [
       end_date: { type: 'string', description: 'Ngày kết thúc (YYYY-MM-DD)' },
       compare_previous: { type: 'boolean', description: 'So sánh với kỳ trước đó' }
     },
-    handler: async (args, client) => client.get('/api/mcp/smart/orders/summary', { params: args }),
+    handler: async (args, client) => client.get('/api/mcp/smart/orders/summary', args),
   },
   {
     name: 'bos_smart_top_products',
@@ -20,7 +20,7 @@ export const smartTools: McpTool[] = [
       start_date: { type: 'string', description: 'Ngày bắt đầu (YYYY-MM-DD)' },
       end_date: { type: 'string', description: 'Ngày kết thúc (YYYY-MM-DD)' }
     },
-    handler: async (args, client) => client.get('/api/mcp/smart/products/top', { params: args }),
+    handler: async (args, client) => client.get('/api/mcp/smart/products/top', args),
   },
   {
     name: 'bos_smart_order_cycle_time',
@@ -29,7 +29,7 @@ export const smartTools: McpTool[] = [
       start_date: { type: 'string', description: 'Ngày bắt đầu (YYYY-MM-DD)' },
       end_date: { type: 'string', description: 'Ngày kết thúc (YYYY-MM-DD)' }
     },
-    handler: async (args, client) => client.get('/api/mcp/smart/orders/cycle-time', { params: args }),
+    handler: async (args, client) => client.get('/api/mcp/smart/orders/cycle-time', args),
   },
   {
     name: 'bos_smart_customer_segments',
@@ -43,7 +43,7 @@ export const smartTools: McpTool[] = [
     schema: {
       store_id: { type: 'number', description: 'ID cửa hàng/kho cần kiểm tra' }
     },
-    handler: async (args, client) => client.get('/api/mcp/smart/inventory/health', { params: args }),
+    handler: async (args, client) => client.get('/api/mcp/smart/inventory/health', args),
   },
   {
     name: 'bos_smart_stock_reorder_plan',
@@ -52,7 +52,7 @@ export const smartTools: McpTool[] = [
       store_id: { type: 'number', description: 'ID cửa hàng/kho cần kiểm tra' },
       days_to_cover: { type: 'number', description: 'Số ngày tồn kho mục tiêu (mặc định 30)' }
     },
-    handler: async (args, client) => client.get('/api/mcp/smart/inventory/reorder-plan', { params: args }),
+    handler: async (args, client) => client.get('/api/mcp/smart/inventory/reorder-plan', args),
   },
   {
     name: 'bos_smart_inventory_imbalance',

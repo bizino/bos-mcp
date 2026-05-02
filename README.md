@@ -22,8 +22,9 @@ npm run build
 
 | Variable | Default | Mô tả |
 |----------|---------|--------|
-| `BOS_API_URL` | `https://bos.ai.vn/api` | BOS API base URL |
-| `BOS_API_TOKEN` | `` | Bearer token cho auth |
+| `BOS_API_URL` | `https://bos.ai.vn` | BOS domain root (NO /api suffix) |
+| `BOS_API_TOKEN` | `` | Bearer token cho auth (optional) |
+| `MCP_API_KEY` | `` | API key cho MCP M2M auth (required) |
 | `BOS_API_TIMEOUT` | `30000` | Request timeout (ms) |
 
 ## Chạy

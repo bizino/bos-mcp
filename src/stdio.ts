@@ -1,11 +1,13 @@
-import * as readline from 'readline';
-import { BosApiClient } from './client';
-import { McpTool } from './tools/index';
-import { healthTools } from './tools/health';
-import { moduleTools } from './tools/module';
-import { routeTools } from './tools/route';
-import { cacheTools } from './tools/cache';
-import { systemTools } from './tools/system';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+
+import { BosApiClient } from './client/index.js';
+import { McpTool, toZodSchema } from './tools/index.js';
+import { healthTools } from './tools/health.js';
+import { moduleTools } from './tools/module.js';
+import { routeTools } from './tools/route.js';
+import { cacheTools } from './tools/cache.js';
+import { systemTools } from './tools/system.js';
 import {
   productTools,
   orderTools,
@@ -18,8 +20,8 @@ import {
   checkoutTools,
   promotionTools,
   engagementTools,
-} from './tools/bos';
-import { smartTools } from './tools/smart';
+} from './tools/bos.js';
+import { smartTools } from './tools/smart.js';
 
 const allTools: McpTool[] = [
   ...healthTools,
@@ -42,86 +44,37 @@ const allTools: McpTool[] = [
 ];
 
 const client = new BosApiClient();
+const server = new McpServer({
+  name: 'bos-mcp',
+  version: '1.0.0',
+});
 
-interface JsonRpcRequest {
-  jsonrpc: '2.0';
-  id: number | string | null;
-  method: string;
-  params?: any;
-}
-
-function sendResponse(response: any): void {
-  process.stdout.write(JSON.stringify(response) + '\n');
-}
-
-function handleRequest(request: JsonRpcRequest): void {
-  const { id, method, params } = request;
-
-  if (method === 'tools/list') {
-    sendResponse({
-      jsonrpc: '2.0',
-      id,
-      result: {
-        tools: allTools.map((tool) => ({
-          name: tool.name,
-          description: tool.description,
-          inputSchema: { type: 'object', properties: tool.schema },
-        })),
-      },
-    });
-    return;
-  }
-
-  if (method === 'tools/call') {
-    const { name, arguments: args } = params;
-    const tool = allTools.find((t) => t.name === name);
-
-    if (!tool) {
-      sendResponse({ jsonrpc: '2.0', id, error: { code: -32601, message: `Tool not found: ${name}` } });
-      return;
+for (const tool of allTools) {
+  const zodSchema = toZodSchema(tool.schema);
+  server.tool(
+    tool.name,
+    tool.description,
+    zodSchema.shape,
+    async (args: any) => {
+      try {
+        const result = await tool.handler(args, client);
+        return {
+          content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }],
+        };
+      } catch (error: any) {
+        return {
+          content: [{ type: 'text' as const, text: JSON.stringify({ error: error.message || 'Unknown error' }) }],
+          isError: true,
+        };
+      }
     }
-
-    tool
-      .handler(args || {}, client)
-      .then((result) => {
-        sendResponse({
-          jsonrpc: '2.0',
-          id,
-          result: { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] },
-        });
-      })
-      .catch((error: any) => {
-        sendResponse({
-          jsonrpc: '2.0',
-          id,
-          error: { code: -32603, message: error.message || 'Unknown error' },
-        });
-      });
-    return;
-  }
-
-  sendResponse({ jsonrpc: '2.0', id, error: { code: -32601, message: `Method not found: ${method}` } });
+  );
 }
 
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout, terminal: false });
+async function main() {
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+  console.error('BosMCP STDIO Server started -', allTools.length, 'tools available');
+}
 
-rl.on('line', (line: string) => {
-  try {
-    const request = JSON.parse(line);
-    handleRequest(request);
-  } catch (e) {
-    // Ignore non-JSON lines
-  }
-});
-
-process.stdin.on('error', (err: any) => {
-  console.error('Stdin error:', err);
-  process.exit(1);
-});
-
-process.stdout.on('error', (err: any) => {
-  console.error('Stdout error:', err);
-  process.exit(1);
-});
-
-console.error(`BosMCP Server started - ${allTools.length} tools available on stdio`);
+main().catch(console.error);

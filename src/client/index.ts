@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
-import { BosMcpConfig, mergeConfig } from '../config';
+import { BosMcpConfig, mergeConfig } from '../config/index.js';
 
 class TokenBucket {
   private tokens: number;
@@ -45,12 +45,14 @@ export class BosApiClient {
       timeout: cfg.timeout,
       headers: {
         'Content-Type': 'application/json',
+        // BUG 5 FIX: Send x-mcp-api-key header that Laravel McpAuth middleware expects
+        ...(cfg.mcpApiKey && { 'x-mcp-api-key': cfg.mcpApiKey }),
         ...(cfg.bosApiToken && { 'Authorization': `Bearer ${cfg.bosApiToken}` }),
       },
     });
   }
 
-  async request<T>(method: string, path: string, data?: any): Promise<T> {
+  async request<T>(method: string, path: string, data?: any, params?: Record<string, any>): Promise<T> {
     while (!(await rateLimiter.acquire())) {
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
@@ -62,11 +64,14 @@ export class BosApiClient {
           method,
           url: path,
           ...(data && { data }),
+          // BUG 2 FIX: Support query params for GET requests
+          ...(params && { params }),
         });
         return response.data;
       } catch (error) {
         if (error instanceof AxiosError) {
-          if (error.response?.status >= 400 && error.response?.status < 500 && error.response?.status !== 429) {
+          const status = error.response?.status;
+          if (status && status >= 400 && status < 500 && status !== 429) {
             throw error;
           }
           lastError = error;
@@ -81,8 +86,9 @@ export class BosApiClient {
     throw lastError || new Error('Request failed after retries');
   }
 
-  async get<T>(path: string): Promise<T> {
-    return this.request<T>('GET', path);
+  // BUG 2+3 FIX: GET now accepts optional query params
+  async get<T>(path: string, params?: Record<string, any>): Promise<T> {
+    return this.request<T>('GET', path, undefined, params);
   }
 
   async post<T>(path: string, data?: any): Promise<T> {

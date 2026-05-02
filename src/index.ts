@@ -1,17 +1,13 @@
-import { Server } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from '@modelcontextprotocol/sdk/types';
 
-import { BosApiClient } from './client';
-import { McpTool } from './tools/index';
-import { healthTools } from './tools/health';
-import { moduleTools } from './tools/module';
-import { routeTools } from './tools/route';
-import { cacheTools } from './tools/cache';
-import { systemTools } from './tools/system';
+import { BosApiClient } from './client/index.js';
+import { McpTool, toZodSchema } from './tools/index.js';
+import { healthTools } from './tools/health.js';
+import { moduleTools } from './tools/module.js';
+import { routeTools } from './tools/route.js';
+import { cacheTools } from './tools/cache.js';
+import { systemTools } from './tools/system.js';
 import {
   productTools,
   orderTools,
@@ -24,8 +20,8 @@ import {
   checkoutTools,
   promotionTools,
   engagementTools,
-} from './tools/bos';
-import { smartTools } from './tools/smart';
+} from './tools/bos.js';
+import { smartTools } from './tools/smart.js';
 
 const allTools: McpTool[] = [
   ...healthTools,
@@ -47,56 +43,35 @@ const allTools: McpTool[] = [
   ...smartTools,
 ];
 
-const server = new Server(
-  {
-    name: 'bos-mcp',
-    version: '1.0.0',
-  },
-  {
-    capabilities: {
-      tools: {},
-    },
-  }
-);
-
 const client = new BosApiClient();
-
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
-  const tool = allTools.find((t) => t.name === name);
-
-  if (!tool) {
-    return {
-      content: [{ type: 'text', text: JSON.stringify({ error: `Tool not found: ${name}` }) }],
-      isError: true,
-    };
-  }
-
-  try {
-    const result = await tool.handler(args || {}, client);
-    return {
-      content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
-    };
-  } catch (error: any) {
-    return {
-      content: [{ type: 'text', text: JSON.stringify({ error: error.message || 'Unknown error' }) }],
-      isError: true,
-    };
-  }
+const server = new McpServer({
+  name: 'bos-mcp',
+  version: '1.0.0',
 });
 
-server.setRequestHandler(ListToolsRequestSchema, async () => {
-  return {
-    tools: allTools.map((tool) => ({
-      name: tool.name,
-      description: tool.description,
-      inputSchema: {
-        type: 'object',
-        properties: tool.schema,
-      },
-    })),
-  };
-});
+// Register all tools with proper Zod schemas
+for (const tool of allTools) {
+  const zodSchema = toZodSchema(tool.schema);
+
+  server.tool(
+    tool.name,
+    tool.description,
+    zodSchema.shape,
+    async (args: any) => {
+      try {
+        const result = await tool.handler(args, client);
+        return {
+          content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }],
+        };
+      } catch (error: any) {
+        return {
+          content: [{ type: 'text' as const, text: JSON.stringify({ error: error.message || 'Unknown error' }) }],
+          isError: true,
+        };
+      }
+    }
+  );
+}
 
 async function main() {
   const transport = new StdioServerTransport();

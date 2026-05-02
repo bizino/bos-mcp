@@ -1,5 +1,5 @@
-import { BosApiClient } from '../client';
-import { McpTool } from './index';
+import { BosApiClient } from '../client/index.js';
+import { McpTool } from './index.js';
 
 export const routeTools: McpTool[] = [
   {
@@ -9,7 +9,7 @@ export const routeTools: McpTool[] = [
       module: { type: 'string', optional: true },
       limit: { type: 'number', optional: true },
     },
-    handler: async (args, client) => client.get('/boscli/routes'),
+    handler: async (args, client) => client.get('/api/boscli/routes'),
   },
   {
     name: 'boscli_route_by_module',

@@ -1,17 +1,14 @@
-import express, { Request, Response } from 'express';
-import { Server } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { HttpServerTransport } from '@modelcontextprotocol/sdk/server/http.js';
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from '@modelcontextprotocol/sdk/types';
-import { BosApiClient } from './client';
-import { McpTool } from './tools/index';
-import { healthTools } from './tools/health';
-import { moduleTools } from './tools/module';
-import { routeTools } from './tools/route';
-import { cacheTools } from './tools/cache';
-import { systemTools } from './tools/system';
+import express from 'express';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
+
+import { BosApiClient } from './client/index.js';
+import { McpTool, toZodSchema } from './tools/index.js';
+import { healthTools } from './tools/health.js';
+import { moduleTools } from './tools/module.js';
+import { routeTools } from './tools/route.js';
+import { cacheTools } from './tools/cache.js';
+import { systemTools } from './tools/system.js';
 import {
   productTools,
   orderTools,
@@ -24,8 +21,8 @@ import {
   checkoutTools,
   promotionTools,
   engagementTools,
-} from './tools/bos';
-import { smartTools } from './tools/smart';
+} from './tools/bos.js';
+import { smartTools } from './tools/smart.js';
 
 const allTools: McpTool[] = [
   ...healthTools,
@@ -47,72 +44,57 @@ const allTools: McpTool[] = [
   ...smartTools,
 ];
 
-const app = express();
-app.use(express.json());
-
 const client = new BosApiClient();
 
-const server = new Server(
-  {
+function createServer(): McpServer {
+  const server = new McpServer({
     name: 'bos-mcp',
     version: '1.0.0',
-  },
-  {
-    capabilities: {
-      tools: {},
-    },
+  });
+
+  for (const tool of allTools) {
+    const zodSchema = toZodSchema(tool.schema);
+    server.tool(
+      tool.name,
+      tool.description,
+      zodSchema.shape,
+      async (args: any) => {
+        try {
+          const result = await tool.handler(args, client);
+          return {
+            content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }],
+          };
+        } catch (error: any) {
+          return {
+            content: [{ type: 'text' as const, text: JSON.stringify({ error: error.message || 'Unknown error' }) }],
+            isError: true,
+          };
+        }
+      }
+    );
   }
-);
+  return server;
+}
 
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
-  const tool = allTools.find((t) => t.name === name);
-
-  if (!tool) {
-    return {
-      content: [{ type: 'text', text: JSON.stringify({ error: `Tool not found: ${name}` }) }],
-      isError: true,
-    };
-  }
-
-  try {
-    const result = await tool.handler(args || {}, client);
-    return {
-      content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
-    };
-  } catch (error: any) {
-    return {
-      content: [{ type: 'text', text: JSON.stringify({ error: error.message || 'Unknown error' }) }],
-      isError: true,
-    };
-  }
-});
-
-server.setRequestHandler(ListToolsRequestSchema, async () => {
-  return {
-    tools: allTools.map((tool) => ({
-      name: tool.name,
-      description: tool.description,
-      inputSchema: {
-        type: 'object',
-        properties: tool.schema,
-      },
-    })),
-  };
-});
-
+const app = express();
+app.use(express.json());
 const PORT = process.env.PORT || 3000;
 
-app.get('/health', (_, res: Response) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok', tools: allTools.length });
 });
 
-app.post('/mcp', async (req: Request, res: Response) => {
-  const transport = new HttpServerTransport('/mcp', 'post');
-  // Handle MCP request
-  res.json({ jsonrpc: '2.0', id: req.body.id, result: { tools: allTools.length } });
+// SSE endpoint for MCP over HTTP
+app.get('/sse', async (_req, res) => {
+  const server = createServer();
+  const transport = new SSEServerTransport('/messages', res);
+  await server.connect(transport);
+});
+
+app.post('/messages', async (_req, res) => {
+  res.status(200).json({ ok: true });
 });
 
 app.listen(PORT, () => {
-  console.error(`BosMCP HTTP Server started on port ${PORT}`);
+  console.error(`BosMCP HTTP Server started on port ${PORT} — ${allTools.length} tools available`);
 });

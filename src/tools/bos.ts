@@ -1,7 +1,9 @@
-import { BosApiClient } from '../client';
-import { McpTool } from './index';
+import { BosApiClient } from '../client/index.js';
+import { McpTool } from './index.js';
 
-// MiniApp Product Tools
+// ============================================
+// Products (7 tools)
+// ============================================
 export const productTools: McpTool[] = [
   {
     name: 'bos_product_list',
@@ -13,7 +15,7 @@ export const productTools: McpTool[] = [
       search: { type: 'string', optional: true },
       status: { type: 'string', enum: ['active', 'inactive'], optional: true },
     },
-    handler: async (args, client) => client.get('/api/mcp/products'),
+    handler: async (args, client) => client.get('/api/mcp/products', args),
   },
   {
     name: 'bos_product_show',
@@ -25,7 +27,7 @@ export const productTools: McpTool[] = [
     name: 'bos_product_search',
     description: 'Search products by name, SKU, or bar code',
     schema: { q: { type: 'string', description: 'Search query' } },
-    handler: async (args, client) => client.get('/api/mcp/products/search'),
+    handler: async (args, client) => client.get('/api/mcp/products/search', args),
   },
   {
     name: 'bos_product_categories',
@@ -69,7 +71,9 @@ export const productTools: McpTool[] = [
   },
 ];
 
-// MiniApp Order Tools
+// ============================================
+// Orders (6 tools)
+// ============================================
 export const orderTools: McpTool[] = [
   {
     name: 'bos_order_list',
@@ -81,7 +85,7 @@ export const orderTools: McpTool[] = [
       from_date: { type: 'string', optional: true },
       to_date: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.get('/api/mcp/orders'),
+    handler: async (args, client) => client.get('/api/mcp/orders', args),
   },
   {
     name: 'bos_order_show',
@@ -130,7 +134,9 @@ export const orderTools: McpTool[] = [
   },
 ];
 
-// MiniApp Cart Tools
+// ============================================
+// Cart (7 tools)
+// ============================================
 export const cartTools: McpTool[] = [
   {
     name: 'bos_cart_get',
@@ -184,7 +190,9 @@ export const cartTools: McpTool[] = [
   },
 ];
 
-// MiniApp Customer Tools
+// ============================================
+// Customers (5 tools)
+// ============================================
 export const customerTools: McpTool[] = [
   {
     name: 'bos_customer_list',
@@ -194,7 +202,7 @@ export const customerTools: McpTool[] = [
       page_size: { type: 'number', optional: true },
       search: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.get('/api/mcp/customers'),
+    handler: async (args, client) => client.get('/api/mcp/customers', args),
   },
   {
     name: 'bos_customer_show',
@@ -236,7 +244,9 @@ export const customerTools: McpTool[] = [
   },
 ];
 
-// MiniApp Inventory Tools
+// ============================================
+// Inventory (4 tools)
+// ============================================
 export const inventoryTools: McpTool[] = [
   {
     name: 'bos_inventory_list',
@@ -246,7 +256,7 @@ export const inventoryTools: McpTool[] = [
       page_size: { type: 'number', optional: true },
       warehouse_id: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.get('/api/mcp/inventory'),
+    handler: async (args, client) => client.get('/api/mcp/inventory', args),
   },
   {
     name: 'bos_inventory_check',
@@ -269,11 +279,13 @@ export const inventoryTools: McpTool[] = [
     name: 'bos_inventory_low_stock',
     description: 'Get products with low stock alerts',
     schema: { threshold: { type: 'number', optional: true } },
-    handler: async (args, client) => client.get('/api/mcp/inventory/low-stock'),
+    handler: async (args, client) => client.get('/api/mcp/inventory/low-stock', args),
   },
 ];
 
-// MiniApp Voucher Tools
+// ============================================
+// Vouchers (4 tools)
+// ============================================
 export const voucherTools: McpTool[] = [
   {
     name: 'bos_voucher_list',
@@ -283,7 +295,7 @@ export const voucherTools: McpTool[] = [
       page_size: { type: 'number', optional: true },
       status: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.get('/api/mcp/vouchers'),
+    handler: async (args, client) => client.get('/api/mcp/vouchers', args),
   },
   {
     name: 'bos_voucher_validate',
@@ -310,11 +322,13 @@ export const voucherTools: McpTool[] = [
     name: 'bos_customer_vouchers',
     description: 'Get vouchers for current customer',
     schema: { status: { type: 'string', enum: ['available', 'used', 'expired'], optional: true } },
-    handler: async (args, client) => client.get('/api/mcp/customer/vouchers'),
+    handler: async (args, client) => client.get('/api/mcp/customer/vouchers', args),
   },
 ];
 
-// MiniApp Loyalty Tools
+// ============================================
+// Loyalty (5 tools)
+// ============================================
 export const loyaltyTools: McpTool[] = [
   {
     name: 'bos_loyalty_points_balance',
@@ -330,7 +344,10 @@ export const loyaltyTools: McpTool[] = [
       page: { type: 'number', optional: true },
       page_size: { type: 'number', optional: true },
     },
-    handler: async (args, client) => client.get(`/api/mcp/loyalty/${args.customer_id}/history`),
+    handler: async (args, client) => {
+      const { customer_id, ...params } = args;
+      return client.get(`/api/mcp/loyalty/${customer_id}/history`, params);
+    },
   },
   {
     name: 'bos_loyalty_earn',
@@ -361,7 +378,9 @@ export const loyaltyTools: McpTool[] = [
   },
 ];
 
-// MiniApp Store Tools
+// ============================================
+// Stores (3 tools)
+// ============================================
 export const storeTools: McpTool[] = [
   {
     name: 'bos_store_list',
@@ -383,11 +402,13 @@ export const storeTools: McpTool[] = [
       longitude: { type: 'number' },
       radius: { type: 'number', optional: true },
     },
-    handler: async (args, client) => client.get('/api/mcp/stores/nearby'),
+    handler: async (args, client) => client.get('/api/mcp/stores/nearby', args),
   },
 ];
 
-// MiniApp Checkout Tools
+// ============================================
+// Checkout & Payment (4 tools)
+// ============================================
 export const checkoutTools: McpTool[] = [
   {
     name: 'bos_checkout_calculate',
@@ -424,7 +445,9 @@ export const checkoutTools: McpTool[] = [
   },
 ];
 
-// MiniApp Promotion Tools
+// ============================================
+// Promotions (3 tools)
+// ============================================
 export const promotionTools: McpTool[] = [
   {
     name: 'bos_promotion_list',
@@ -433,7 +456,7 @@ export const promotionTools: McpTool[] = [
       page: { type: 'number', optional: true },
       page_size: { type: 'number', optional: true },
     },
-    handler: async (args, client) => client.get('/api/mcp/promotions'),
+    handler: async (args, client) => client.get('/api/mcp/promotions', args),
   },
   {
     name: 'bos_promotion_show',
@@ -449,7 +472,9 @@ export const promotionTools: McpTool[] = [
   },
 ];
 
-// MiniApp Home & Engagement Tools
+// ============================================
+// Home & Engagement (4 tools)
+// ============================================
 export const engagementTools: McpTool[] = [
   {
     name: 'bos_home',
@@ -461,7 +486,7 @@ export const engagementTools: McpTool[] = [
     name: 'bos_banners',
     description: 'Get promotional banners',
     schema: { location: { type: 'string', optional: true } },
-    handler: async (args, client) => client.get('/api/mcp/banners'),
+    handler: async (args, client) => client.get('/api/mcp/banners', args),
   },
   {
     name: 'bos_notifications',
@@ -470,7 +495,7 @@ export const engagementTools: McpTool[] = [
       page: { type: 'number', optional: true },
       unread_only: { type: 'boolean', optional: true },
     },
-    handler: async (args, client) => client.get('/api/mcp/notifications'),
+    handler: async (args, client) => client.get('/api/mcp/notifications', args),
   },
   {
     name: 'bos_notification_mark_read',
