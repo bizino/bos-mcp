@@ -13,25 +13,25 @@ export const productTools: McpTool[] = [
       search: { type: 'string', optional: true },
       status: { type: 'string', enum: ['active', 'inactive'], optional: true },
     },
-    handler: async (args, client) => client.get('/miniapp/products'),
+    handler: async (args, client) => client.get('/api/mcp/products'),
   },
   {
     name: 'bos_product_show',
     description: 'Get product details by ID',
     schema: { product_id: { type: 'string', description: 'Product ID' } },
-    handler: async (args, client) => client.get(`/miniapp/products/${args.product_id}`),
+    handler: async (args, client) => client.get(`/api/mcp/products/${args.product_id}`),
   },
   {
     name: 'bos_product_search',
     description: 'Search products by name, SKU, or bar code',
     schema: { q: { type: 'string', description: 'Search query' } },
-    handler: async (args, client) => client.get('/miniapp/products/search'),
+    handler: async (args, client) => client.get('/api/mcp/products/search'),
   },
   {
     name: 'bos_product_categories',
     description: 'Get all product categories',
     schema: {},
-    handler: async (_, client) => client.get('/miniapp/categories'),
+    handler: async (_, client) => client.get('/api/mcp/categories'),
   },
   {
     name: 'bos_product_create',
@@ -44,7 +44,7 @@ export const productTools: McpTool[] = [
       stock: { type: 'number', optional: true },
       description: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.post('/miniapp/products', args),
+    handler: async (args, client) => client.post('/api/mcp/products', args),
   },
   {
     name: 'bos_product_update',
@@ -58,14 +58,14 @@ export const productTools: McpTool[] = [
     },
     handler: async (args, client) => {
       const { product_id, ...data } = args;
-      return client.put(`/miniapp/products/${product_id}`, data);
+      return client.put(`/api/mcp/products/${product_id}`, data);
     },
   },
   {
     name: 'bos_product_delete',
     description: 'Delete a product',
     schema: { product_id: { type: 'string' } },
-    handler: async (args, client) => client.delete(`/miniapp/products/${args.product_id}`),
+    handler: async (args, client) => client.delete(`/api/mcp/products/${args.product_id}`),
   },
 ];
 
@@ -81,13 +81,13 @@ export const orderTools: McpTool[] = [
       from_date: { type: 'string', optional: true },
       to_date: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.get('/miniapp/orders'),
+    handler: async (args, client) => client.get('/api/mcp/orders'),
   },
   {
     name: 'bos_order_show',
     description: 'Get order details by ID',
     schema: { order_id: { type: 'string' } },
-    handler: async (args, client) => client.get(`/miniapp/orders/${args.order_id}`),
+    handler: async (args, client) => client.get(`/api/mcp/orders/${args.order_id}`),
   },
   {
     name: 'bos_order_create',
@@ -99,7 +99,7 @@ export const orderTools: McpTool[] = [
       payment_method: { type: 'string', optional: true },
       note: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.post('/miniapp/orders', args),
+    handler: async (args, client) => client.post('/api/mcp/orders', args),
   },
   {
     name: 'bos_order_update_status',
@@ -110,7 +110,7 @@ export const orderTools: McpTool[] = [
     },
     handler: async (args, client) => {
       const { order_id, status } = args;
-      return client.put(`/miniapp/orders/${order_id}/status`, { status });
+      return client.put(`/api/mcp/orders/${order_id}/status`, { status });
     },
   },
   {
@@ -119,14 +119,14 @@ export const orderTools: McpTool[] = [
     schema: { order_id: { type: 'string' }, reason: { type: 'string', optional: true } },
     handler: async (args, client) => {
       const { order_id, reason } = args;
-      return client.post(`/miniapp/orders/${order_id}/cancel`, { reason });
+      return client.post(`/api/mcp/orders/${order_id}/cancel`, { reason });
     },
   },
   {
     name: 'bos_order_count_by_status',
     description: 'Get order counts grouped by status',
     schema: {},
-    handler: async (_, client) => client.get('/miniapp/orders/count-by-status'),
+    handler: async (_, client) => client.get('/api/mcp/orders/count-by-status'),
   },
 ];
 
@@ -136,7 +136,7 @@ export const cartTools: McpTool[] = [
     name: 'bos_cart_get',
     description: 'Get current user cart',
     schema: {},
-    handler: async (_, client) => client.get('/miniapp/cart'),
+    handler: async (_, client) => client.get('/api/mcp/cart'),
   },
   {
     name: 'bos_cart_add_item',
@@ -147,7 +147,7 @@ export const cartTools: McpTool[] = [
       variant_id: { type: 'string', optional: true },
       notes: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.post('/miniapp/cart/items', args),
+    handler: async (args, client) => client.post('/api/mcp/cart/items', args),
   },
   {
     name: 'bos_cart_update_item',
@@ -155,32 +155,32 @@ export const cartTools: McpTool[] = [
     schema: { item_id: { type: 'string' }, quantity: { type: 'number' } },
     handler: async (args, client) => {
       const { item_id, ...data } = args;
-      return client.put(`/miniapp/cart/items/${item_id}`, data);
+      return client.put(`/api/mcp/cart/items/${item_id}`, data);
     },
   },
   {
     name: 'bos_cart_remove_item',
     description: 'Remove item from cart',
     schema: { item_id: { type: 'string' } },
-    handler: async (args, client) => client.delete(`/miniapp/cart/items/${args.item_id}`),
+    handler: async (args, client) => client.delete(`/api/mcp/cart/items/${args.item_id}`),
   },
   {
     name: 'bos_cart_clear',
     description: 'Clear all items from cart',
     schema: {},
-    handler: async (_, client) => client.delete('/miniapp/cart'),
+    handler: async (_, client) => client.delete('/api/mcp/cart'),
   },
   {
     name: 'bos_cart_apply_voucher',
     description: 'Apply voucher code to cart',
     schema: { voucher_code: { type: 'string' } },
-    handler: async (args, client) => client.post('/miniapp/cart/apply-voucher', args),
+    handler: async (args, client) => client.post('/api/mcp/cart/apply-voucher', args),
   },
   {
     name: 'bos_cart_remove_voucher',
     description: 'Remove voucher from cart',
     schema: {},
-    handler: async (_, client) => client.delete('/miniapp/cart/voucher'),
+    handler: async (_, client) => client.delete('/api/mcp/cart/voucher'),
   },
 ];
 
@@ -194,13 +194,13 @@ export const customerTools: McpTool[] = [
       page_size: { type: 'number', optional: true },
       search: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.get('/miniapp/customers'),
+    handler: async (args, client) => client.get('/api/mcp/customers'),
   },
   {
     name: 'bos_customer_show',
     description: 'Get customer details by ID',
     schema: { customer_id: { type: 'string' } },
-    handler: async (args, client) => client.get(`/miniapp/customers/${args.customer_id}`),
+    handler: async (args, client) => client.get(`/api/mcp/customers/${args.customer_id}`),
   },
   {
     name: 'bos_customer_create',
@@ -211,7 +211,7 @@ export const customerTools: McpTool[] = [
       email: { type: 'string', optional: true },
       address: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.post('/miniapp/customers', args),
+    handler: async (args, client) => client.post('/api/mcp/customers', args),
   },
   {
     name: 'bos_customer_update',
@@ -225,14 +225,14 @@ export const customerTools: McpTool[] = [
     },
     handler: async (args, client) => {
       const { customer_id, ...data } = args;
-      return client.put(`/miniapp/customers/${customer_id}`, data);
+      return client.put(`/api/mcp/customers/${customer_id}`, data);
     },
   },
   {
     name: 'bos_customer_orders',
     description: 'Get order history for a customer',
     schema: { customer_id: { type: 'string' } },
-    handler: async (args, client) => client.get(`/miniapp/customers/${args.customer_id}/orders`),
+    handler: async (args, client) => client.get(`/api/mcp/customers/${args.customer_id}/orders`),
   },
 ];
 
@@ -246,13 +246,13 @@ export const inventoryTools: McpTool[] = [
       page_size: { type: 'number', optional: true },
       warehouse_id: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.get('/miniapp/inventory'),
+    handler: async (args, client) => client.get('/api/mcp/inventory'),
   },
   {
     name: 'bos_inventory_check',
     description: 'Check stock quantity for a product',
     schema: { product_id: { type: 'string' } },
-    handler: async (args, client) => client.get(`/miniapp/inventory/check/${args.product_id}`),
+    handler: async (args, client) => client.get(`/api/mcp/inventory/check/${args.product_id}`),
   },
   {
     name: 'bos_inventory_update',
@@ -263,13 +263,13 @@ export const inventoryTools: McpTool[] = [
       type: { type: 'string', enum: ['set', 'add', 'subtract'] },
       reason: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.post('/miniapp/inventory/update', args),
+    handler: async (args, client) => client.post('/api/mcp/inventory/update', args),
   },
   {
     name: 'bos_inventory_low_stock',
     description: 'Get products with low stock alerts',
     schema: { threshold: { type: 'number', optional: true } },
-    handler: async (args, client) => client.get('/miniapp/inventory/low-stock'),
+    handler: async (args, client) => client.get('/api/mcp/inventory/low-stock'),
   },
 ];
 
@@ -283,13 +283,13 @@ export const voucherTools: McpTool[] = [
       page_size: { type: 'number', optional: true },
       status: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.get('/miniapp/vouchers'),
+    handler: async (args, client) => client.get('/api/mcp/vouchers'),
   },
   {
     name: 'bos_voucher_validate',
     description: 'Validate a voucher code',
     schema: { code: { type: 'string' } },
-    handler: async (args, client) => client.post('/miniapp/vouchers/validate', args),
+    handler: async (args, client) => client.post('/api/mcp/vouchers/validate', args),
   },
   {
     name: 'bos_voucher_create',
@@ -304,13 +304,13 @@ export const voucherTools: McpTool[] = [
       end_date: { type: 'string' },
       usage_limit: { type: 'number', optional: true },
     },
-    handler: async (args, client) => client.post('/miniapp/vouchers', args),
+    handler: async (args, client) => client.post('/api/mcp/vouchers', args),
   },
   {
     name: 'bos_customer_vouchers',
     description: 'Get vouchers for current customer',
     schema: { status: { type: 'string', enum: ['available', 'used', 'expired'], optional: true } },
-    handler: async (args, client) => client.get('/miniapp/customer/vouchers'),
+    handler: async (args, client) => client.get('/api/mcp/customer/vouchers'),
   },
 ];
 
@@ -320,7 +320,7 @@ export const loyaltyTools: McpTool[] = [
     name: 'bos_loyalty_points_balance',
     description: 'Get loyalty points balance for customer',
     schema: { customer_id: { type: 'string' } },
-    handler: async (args, client) => client.get(`/miniapp/loyalty/${args.customer_id}/balance`),
+    handler: async (args, client) => client.get(`/api/mcp/loyalty/${args.customer_id}/balance`),
   },
   {
     name: 'bos_loyalty_points_history',
@@ -330,7 +330,7 @@ export const loyaltyTools: McpTool[] = [
       page: { type: 'number', optional: true },
       page_size: { type: 'number', optional: true },
     },
-    handler: async (args, client) => client.get(`/miniapp/loyalty/${args.customer_id}/history`),
+    handler: async (args, client) => client.get(`/api/mcp/loyalty/${args.customer_id}/history`),
   },
   {
     name: 'bos_loyalty_earn',
@@ -341,7 +341,7 @@ export const loyaltyTools: McpTool[] = [
       order_id: { type: 'string', optional: true },
       description: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.post('/miniapp/loyalty/earn', args),
+    handler: async (args, client) => client.post('/api/mcp/loyalty/earn', args),
   },
   {
     name: 'bos_loyalty_redeem',
@@ -351,13 +351,13 @@ export const loyaltyTools: McpTool[] = [
       points: { type: 'number' },
       reward_id: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.post('/miniapp/loyalty/redeem', args),
+    handler: async (args, client) => client.post('/api/mcp/loyalty/redeem', args),
   },
   {
     name: 'bos_loyalty_tiers',
     description: 'Get loyalty tier information',
     schema: {},
-    handler: async (_, client) => client.get('/miniapp/loyalty/tiers'),
+    handler: async (_, client) => client.get('/api/mcp/loyalty/tiers'),
   },
 ];
 
@@ -367,13 +367,13 @@ export const storeTools: McpTool[] = [
     name: 'bos_store_list',
     description: 'List all stores locations',
     schema: {},
-    handler: async (_, client) => client.get('/miniapp/stores'),
+    handler: async (_, client) => client.get('/api/mcp/stores'),
   },
   {
     name: 'bos_store_show',
     description: 'Get store details',
     schema: { store_id: { type: 'string' } },
-    handler: async (args, client) => client.get(`/miniapp/stores/${args.store_id}`),
+    handler: async (args, client) => client.get(`/api/mcp/stores/${args.store_id}`),
   },
   {
     name: 'bos_store_nearby',
@@ -383,7 +383,7 @@ export const storeTools: McpTool[] = [
       longitude: { type: 'number' },
       radius: { type: 'number', optional: true },
     },
-    handler: async (args, client) => client.get('/miniapp/stores/nearby'),
+    handler: async (args, client) => client.get('/api/mcp/stores/nearby'),
   },
 ];
 
@@ -397,7 +397,7 @@ export const checkoutTools: McpTool[] = [
       shipping_address_id: { type: 'string', optional: true },
       voucher_code: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.post('/miniapp/checkout/calculate', args),
+    handler: async (args, client) => client.post('/api/mcp/checkout/calculate', args),
   },
   {
     name: 'bos_checkout_create',
@@ -408,19 +408,19 @@ export const checkoutTools: McpTool[] = [
       payment_method: { type: 'string' },
       voucher_code: { type: 'string', optional: true },
     },
-    handler: async (args, client) => client.post('/miniapp/checkout/create', args),
+    handler: async (args, client) => client.post('/api/mcp/checkout/create', args),
   },
   {
     name: 'bos_payment_methods',
     description: 'Get available payment methods',
     schema: {},
-    handler: async (_, client) => client.get('/miniapp/payment-methods'),
+    handler: async (_, client) => client.get('/api/mcp/payment-methods'),
   },
   {
     name: 'bos_payment_verify',
     description: 'Verify payment status',
     schema: { order_id: { type: 'string' } },
-    handler: async (args, client) => client.get(`/miniapp/payments/verify/${args.order_id}`),
+    handler: async (args, client) => client.get(`/api/mcp/payments/verify/${args.order_id}`),
   },
 ];
 
@@ -433,19 +433,19 @@ export const promotionTools: McpTool[] = [
       page: { type: 'number', optional: true },
       page_size: { type: 'number', optional: true },
     },
-    handler: async (args, client) => client.get('/miniapp/promotions'),
+    handler: async (args, client) => client.get('/api/mcp/promotions'),
   },
   {
     name: 'bos_promotion_show',
     description: 'Get promotion details',
     schema: { promotion_id: { type: 'string' } },
-    handler: async (args, client) => client.get(`/miniapp/promotions/${args.promotion_id}`),
+    handler: async (args, client) => client.get(`/api/mcp/promotions/${args.promotion_id}`),
   },
   {
     name: 'bos_promotion_apply',
     description: 'Apply promotion to order',
     schema: { promotion_id: { type: 'string' }, order_id: { type: 'string' } },
-    handler: async (args, client) => client.post('/miniapp/promotions/apply', args),
+    handler: async (args, client) => client.post('/api/mcp/promotions/apply', args),
   },
 ];
 
@@ -455,13 +455,13 @@ export const engagementTools: McpTool[] = [
     name: 'bos_home',
     description: 'Get home page data (banners, categories, featured products)',
     schema: {},
-    handler: async (_, client) => client.get('/miniapp/home'),
+    handler: async (_, client) => client.get('/api/mcp/home'),
   },
   {
     name: 'bos_banners',
     description: 'Get promotional banners',
     schema: { location: { type: 'string', optional: true } },
-    handler: async (args, client) => client.get('/miniapp/banners'),
+    handler: async (args, client) => client.get('/api/mcp/banners'),
   },
   {
     name: 'bos_notifications',
@@ -470,12 +470,12 @@ export const engagementTools: McpTool[] = [
       page: { type: 'number', optional: true },
       unread_only: { type: 'boolean', optional: true },
     },
-    handler: async (args, client) => client.get('/miniapp/notifications'),
+    handler: async (args, client) => client.get('/api/mcp/notifications'),
   },
   {
     name: 'bos_notification_mark_read',
     description: 'Mark notification as read',
     schema: { notification_id: { type: 'string' } },
-    handler: async (args, client) => client.post(`/miniapp/notifications/${args.notification_id}/read`),
+    handler: async (args, client) => client.post(`/api/mcp/notifications/${args.notification_id}/read`),
   },
 ];
