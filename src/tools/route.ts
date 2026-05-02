@@ -9,7 +9,7 @@ export const routeTools: McpTool[] = [
       module: { type: 'string', optional: true },
       limit: { type: 'number', optional: true },
     },
-    handler: async (args, client) => client.get('/api/boscli/routes'),
+    handler: async (args, client) => client.get('/boscli/routes', args),
   },
   {
     name: 'boscli_route_by_module',

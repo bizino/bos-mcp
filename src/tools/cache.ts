@@ -6,7 +6,7 @@ export const cacheTools: McpTool[] = [
     name: 'boscli_cache_list',
     description: 'Get BOS cache configuration and status',
     schema: {},
-    handler: async (_, client) => client.get('/api/boscli/cache'),
+    handler: async (_, client) => client.get('/boscli/cache'),
   },
   {
     name: 'boscli_cache_clear',
@@ -14,6 +14,6 @@ export const cacheTools: McpTool[] = [
     schema: {
       type: { type: 'string', enum: ['all', 'config', 'route', 'view', 'cache'], optional: true },
     },
-    handler: async (args, client) => client.post('/api/boscli/cache/clear', { type: args.type || 'all' }),
+    handler: async (args, client) => client.post('/boscli/cache/clear', { type: args.type || 'all' }),
   },
 ];

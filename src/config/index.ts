@@ -5,11 +5,10 @@ export interface BosMcpConfig {
   timeout: number;
 }
 
-// BUG 4 FIX: baseURL should NOT include /api because
-// Laravel RouteServiceProvider already adds /api prefix,
-// and all tool endpoints already specify /api/mcp/...
+// BUG 4 FIX: baseURL now includes /api because
+// tools should use relative paths like '/mcp/products'
 export const defaultConfig: BosMcpConfig = {
-  bosApiUrl: process.env.BOS_API_URL || 'https://bos.ai.vn',
+  bosApiUrl: process.env.BOS_API_URL || 'https://bos.ai.vn/api',
   bosApiToken: process.env.BOS_API_TOKEN || '',
   // BUG 5 FIX: Add MCP API key config
   mcpApiKey: process.env.MCP_API_KEY || '',

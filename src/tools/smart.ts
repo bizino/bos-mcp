@@ -9,7 +9,7 @@ export const smartTools: McpTool[] = [
       end_date: { type: 'string', description: 'Ngày kết thúc (YYYY-MM-DD)' },
       compare_previous: { type: 'boolean', description: 'So sánh với kỳ trước đó' }
     },
-    handler: async (args, client) => client.get('/api/mcp/smart/orders/summary', args),
+    handler: async (args, client) => client.get('/mcp/smart/orders/summary', args),
   },
   {
     name: 'bos_smart_top_products',
@@ -20,7 +20,7 @@ export const smartTools: McpTool[] = [
       start_date: { type: 'string', description: 'Ngày bắt đầu (YYYY-MM-DD)' },
       end_date: { type: 'string', description: 'Ngày kết thúc (YYYY-MM-DD)' }
     },
-    handler: async (args, client) => client.get('/api/mcp/smart/products/top', args),
+    handler: async (args, client) => client.get('/mcp/smart/products/top', args),
   },
   {
     name: 'bos_smart_order_cycle_time',
@@ -29,13 +29,13 @@ export const smartTools: McpTool[] = [
       start_date: { type: 'string', description: 'Ngày bắt đầu (YYYY-MM-DD)' },
       end_date: { type: 'string', description: 'Ngày kết thúc (YYYY-MM-DD)' }
     },
-    handler: async (args, client) => client.get('/api/mcp/smart/orders/cycle-time', args),
+    handler: async (args, client) => client.get('/mcp/smart/orders/cycle-time', args),
   },
   {
     name: 'bos_smart_customer_segments',
     description: 'Phân tích RFM (Recency, Frequency, Monetary) chia khách hàng thành 8 tập (segments) kèm gợi ý hành động marketing.',
     schema: {},
-    handler: async (_, client) => client.get('/api/mcp/smart/customers/segments'),
+    handler: async (_, client) => client.get('/mcp/smart/customers/segments'),
   },
   {
     name: 'bos_smart_inventory_health',
@@ -43,7 +43,7 @@ export const smartTools: McpTool[] = [
     schema: {
       store_id: { type: 'number', description: 'ID cửa hàng/kho cần kiểm tra' }
     },
-    handler: async (args, client) => client.get('/api/mcp/smart/inventory/health', args),
+    handler: async (args, client) => client.get('/mcp/smart/inventory/health', args),
   },
   {
     name: 'bos_smart_stock_reorder_plan',
@@ -52,12 +52,12 @@ export const smartTools: McpTool[] = [
       store_id: { type: 'number', description: 'ID cửa hàng/kho cần kiểm tra' },
       days_to_cover: { type: 'number', description: 'Số ngày tồn kho mục tiêu (mặc định 30)' }
     },
-    handler: async (args, client) => client.get('/api/mcp/smart/inventory/reorder-plan', args),
+    handler: async (args, client) => client.get('/mcp/smart/inventory/reorder-plan', args),
   },
   {
     name: 'bos_smart_inventory_imbalance',
     description: 'Phát hiện sự mất cân bằng tồn kho giữa các chi nhánh và đề xuất chuyển kho nội bộ.',
     schema: {},
-    handler: async (_, client) => client.get('/api/mcp/smart/inventory/imbalance'),
+    handler: async (_, client) => client.get('/mcp/smart/inventory/imbalance'),
   }
 ];

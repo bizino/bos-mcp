@@ -6,7 +6,7 @@ export const moduleTools: McpTool[] = [
     name: 'boscli_module_list',
     description: 'List all BOS modules with their enabled/disabled status',
     schema: {},
-    handler: async (_, client) => client.get('/api/boscli/modules'),
+    handler: async (_, client) => client.get('/boscli/modules'),
   },
   {
     name: 'boscli_module_show',
