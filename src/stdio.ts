@@ -18,7 +18,7 @@ import {
   checkoutTools,
   promotionTools,
   engagementTools,
-} from './tools/miniapp';
+} from './tools/bos';
 
 const allTools: McpTool[] = [
   ...healthTools,

@@ -72,47 +72,47 @@ CMD ["node", "dist/http.js"]
 - `boscli_system_*` - System info, logs, git, deploy
 
 ### Products (6 tools)
-- `miniapp_product_list`, `miniapp_product_show`, `miniapp_product_search`
-- `miniapp_product_create`, `miniapp_product_update`, `miniapp_product_delete`
+- `bos_product_list`, `bos_product_show`, `bos_product_search`
+- `bos_product_create`, `bos_product_update`, `bos_product_delete`
 
 ### Orders (6 tools)
-- `miniapp_order_list`, `miniapp_order_show`, `miniapp_order_create`
-- `miniapp_order_update_status`, `miniapp_order_cancel`, `miniapp_order_count_by_status`
+- `bos_order_list`, `bos_order_show`, `bos_order_create`
+- `bos_order_update_status`, `bos_order_cancel`, `bos_order_count_by_status`
 
 ### Cart (7 tools)
-- `miniapp_cart_get`, `miniapp_cart_add_item`, `miniapp_cart_update_item`
-- `miniapp_cart_remove_item`, `miniapp_cart_clear`
-- `miniapp_cart_apply_voucher`, `miniapp_cart_remove_voucher`
+- `bos_cart_get`, `bos_cart_add_item`, `bos_cart_update_item`
+- `bos_cart_remove_item`, `bos_cart_clear`
+- `bos_cart_apply_voucher`, `bos_cart_remove_voucher`
 
 ### Customers (5 tools)
-- `miniapp_customer_list`, `miniapp_customer_show`, `miniapp_customer_create`
-- `miniapp_customer_update`, `miniapp_customer_orders`
+- `bos_customer_list`, `bos_customer_show`, `bos_customer_create`
+- `bos_customer_update`, `bos_customer_orders`
 
 ### Inventory (4 tools)
-- `miniapp_inventory_list`, `miniapp_inventory_check`, `miniapp_inventory_update`
-- `miniapp_inventory_low_stock`
+- `bos_inventory_list`, `bos_inventory_check`, `bos_inventory_update`
+- `bos_inventory_low_stock`
 
 ### Vouchers (4 tools)
-- `miniapp_voucher_list`, `miniapp_voucher_validate`, `miniapp_voucher_create`
-- `miniapp_customer_vouchers`
+- `bos_voucher_list`, `bos_voucher_validate`, `bos_voucher_create`
+- `bos_customer_vouchers`
 
 ### Loyalty (5 tools)
-- `miniapp_loyalty_points_balance`, `miniapp_loyalty_points_history`
-- `miniapp_loyalty_earn`, `miniapp_loyalty_redeem`, `miniapp_loyalty_tiers`
+- `bos_loyalty_points_balance`, `bos_loyalty_points_history`
+- `bos_loyalty_earn`, `bos_loyalty_redeem`, `bos_loyalty_tiers`
 
 ### Stores (3 tools)
-- `miniapp_store_list`, `miniapp_store_show`, `miniapp_store_nearby`
+- `bos_store_list`, `bos_store_show`, `bos_store_nearby`
 
 ### Checkout & Payment (4 tools)
-- `miniapp_checkout_calculate`, `miniapp_checkout_create`
-- `miniapp_payment_methods`, `miniapp_payment_verify`
+- `bos_checkout_calculate`, `bos_checkout_create`
+- `bos_payment_methods`, `bos_payment_verify`
 
 ### Promotions (3 tools)
-- `miniapp_promotion_list`, `miniapp_promotion_show`, `miniapp_promotion_apply`
+- `bos_promotion_list`, `bos_promotion_show`, `bos_promotion_apply`
 
 ### Home & Engagement (4 tools)
-- `miniapp_home`, `miniapp_banners`
-- `miniapp_notifications`, `miniapp_notification_mark_read`
+- `bos_home`, `bos_banners`
+- `bos_notifications`, `bos_notification_mark_read`
 
 ## License
 
