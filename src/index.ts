@@ -22,6 +22,7 @@ import {
   engagementTools,
 } from './tools/bos.js';
 import { smartTools } from './tools/smart.js';
+import { erpTools } from './tools/erp.js';
 
 const allTools: McpTool[] = [
   ...healthTools,
@@ -40,6 +41,7 @@ const allTools: McpTool[] = [
   ...checkoutTools,
   ...promotionTools,
   ...engagementTools,
+  ...erpTools,
   ...smartTools,
 ];
 

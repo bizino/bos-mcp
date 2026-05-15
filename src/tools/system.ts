@@ -15,7 +15,7 @@ export const systemTools: McpTool[] = [
       lines: { type: 'number', optional: true },
       level: { type: 'string', enum: ['error', 'warning', 'info'], optional: true },
     },
-    handler: async (args, client) => client.get('/boscli/system/logs'),
+    handler: async (args, client) => client.get('/boscli/system/logs', args),
   },
   {
     name: 'boscli_system_git_status',
@@ -27,6 +27,6 @@ export const systemTools: McpTool[] = [
     name: 'boscli_system_deploy_status',
     description: 'Get deployment status for BOS servers',
     schema: { customer: { type: 'string', optional: true } },
-    handler: async (args, client) => client.get('/boscli/system/deploy-status'),
+    handler: async (args, client) => client.get('/boscli/system/deploy-status', args),
   },
 ];
